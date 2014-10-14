@@ -1,0 +1,54 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'me.tatarka:gradle-retrolambda:2.4.0'
+    }
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'retrolambda'
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion "19.1.0"
+
+
+    defaultConfig {
+        applicationId "com.jaggernod.pulluptraining"
+        minSdkVersion 14
+        targetSdkVersion 19
+        versionCode 1
+        versionName "0.1"
+    }
+    buildTypes {
+        release {
+            runProguard false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+        }
+
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+}
+
+retrolambda {
+    javaVersion JavaVersion.VERSION_1_6
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile "com.netflix.rxjava:rxjava-core:0.20.5"
+    compile "com.netflix.rxjava:rxjava-android:0.20.5"
+}
