@@ -40,6 +40,11 @@ public class StrictModeHelper {
 
         // Just in case previous Activity is hasn't yet been collected
         System.gc();
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            Log.w(TAG, "Waiting for Strict Mode has been interrupted");
+        }
 
         StrictModeHelper strictMode = new StrictModeHelper();
         try {

@@ -16,6 +16,8 @@ import rx.subscriptions.CompositeSubscription;
 
 public class MainActivity extends Activity {
 
+    private static final String TAG = MainActivity.class.getSimpleName();
+
     private TextView textView;
 
     private CompositeSubscription subscriptions = new CompositeSubscription();
@@ -25,28 +27,15 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         textView = (TextView) findViewById(R.id.hello_world_text_view);
-        subscriptions.add(Observable.create((Subscriber<? super Integer> subscriber) -> {
-            if (!subscriber.isUnsubscribed()) {
-                int i = 0;
-                while (i < 100000) {
-                    subscriber.onNext(i++);
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        subscriber.onError(e);
-                        break;
-                    }
-                }
-                subscriber.onCompleted();
-            }
-        })
-                .map(Object::toString)
-                .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((t1) -> {
-                    Log.d("SSSS", this.hashCode() + "");
-                    textView.setText(t1);
-                }));
+        subscriptions.add(
+                Observable.create(new Ticker())
+                        .map(Object::toString)
+                        .subscribeOn(Schedulers.computation())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe((t1) -> {
+                            Log.d(TAG, this.hashCode() + "");
+                            textView.setText(t1);
+                        }));
     }
 
 
@@ -76,5 +65,25 @@ public class MainActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         subscriptions.clear();
+    }
+
+    private static class Ticker implements Observable.OnSubscribe<Integer> {
+
+        @Override
+        public void call(Subscriber<? super Integer> subscriber) {
+            if (!subscriber.isUnsubscribed()) {
+                int i = 0;
+                while (i < 100000) {
+                    subscriber.onNext(i++);
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        subscriber.onError(e);
+                        break;
+                    }
+                }
+                subscriber.onCompleted();
+            }
+        }
     }
 }
