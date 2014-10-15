@@ -6,6 +6,10 @@ import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertNotNull;
 
+/**
+ * Created by Pawel Polanski on 14/10/14.
+ */
+
 @Config(emulateSdk = 18)
 @RunWith(RobolectricGradleTestRunner.class)
 public class ApplicationTest {

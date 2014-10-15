@@ -2,23 +2,30 @@ package com.jaggernod.pulluptraining;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
+/**
+ * Created by Pawel Polanski on 14/10/14.
+ */
 
 public class MainActivity extends Activity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
+    @InjectView(R.id.hello_world_text_view)
     private TextView textView;
 
     private CompositeSubscription subscriptions = new CompositeSubscription();
@@ -27,21 +34,24 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        textView = (TextView) findViewById(R.id.hello_world_text_view);
-        subscriptions.add(
+        ButterKnife.inject(this);
+
+        test();
+    }
+
+    private void test() {
+        registerSubscription(
                 Observable.create(new Ticker())
                         .map(Object::toString)
-                        .doOnNext(new Action1<String>() {
-                            @Override
-                            public void call(String s) {
-                                Log.d(TAG, this.hashCode() + " " + s);
-                            }
-                        })
+                        .doOnNext(s -> Log.d(TAG, String.valueOf(this.hashCode())))
                         .subscribeOn(Schedulers.computation())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(textView::setText));
     }
 
+    protected void registerSubscription(@NonNull Subscription subscription) {
+        subscriptions.add(subscription);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
