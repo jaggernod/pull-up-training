@@ -10,6 +10,7 @@ import android.widget.TextView;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -30,12 +31,15 @@ public class MainActivity extends Activity {
         subscriptions.add(
                 Observable.create(new Ticker())
                         .map(Object::toString)
+                        .doOnNext(new Action1<String>() {
+                            @Override
+                            public void call(String s) {
+                                Log.d(TAG, this.hashCode() + " " + s);
+                            }
+                        })
                         .subscribeOn(Schedulers.computation())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe((t1) -> {
-                            Log.d(TAG, this.hashCode() + "");
-                            textView.setText(t1);
-                        }));
+                        .subscribe(textView::setText));
     }
 
 

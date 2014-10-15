@@ -38,15 +38,7 @@ public class StrictModeHelper {
             return;
         }
 
-        // Just in case previous Activity is hasn't yet been collected
-        System.gc();
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            Log.w(TAG, "Waiting for Strict Mode has been interrupted");
-        }
-
-        StrictModeHelper strictMode = new StrictModeHelper();
+        final StrictModeHelper strictMode = new StrictModeHelper();
         try {
             StrictMode.setVmPolicy(strictMode.getStrictVmPolicy());
 
@@ -56,7 +48,14 @@ public class StrictModeHelper {
                 System.setErr(new PrintStreamThatDumpsHprofWhenStrictModeKillsUs(System.err));
             }
         } catch(Exception e) {
-            // ignore errors
+            Log.e(TAG, "Unable to register Strict Mode");
+        }
+    }
+
+    public static void activityRecreation() {
+        if (STRICT_POLICY_ENABLED) {
+            // Just in case previous Activity is hasn't yet been collected
+            System.gc();
         }
     }
 
