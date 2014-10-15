@@ -1,4 +1,6 @@
-package com.jaggernod.pulluptraining;
+package com.jaggernod.pulluptraining.helpers;
+
+import com.jaggernod.pulluptraining.BuildConfig;
 
 import android.os.Debug;
 import android.os.Environment;

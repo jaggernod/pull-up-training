@@ -1,8 +1,8 @@
-package com.jaggernod.pulluptraining;
+package com.jaggernod.pulluptraining.activities;
 
-import android.app.Activity;
+import com.jaggernod.pulluptraining.R;
+
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,23 +12,21 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import rx.Observable;
 import rx.Subscriber;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
+
+import static rx.Observable.OnSubscribe;
 
 /**
  * Created by Pawel Polanski on 14/10/14.
  */
 
-public class MainActivity extends Activity {
+public class MainActivity extends BaseActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
     @InjectView(R.id.hello_world_text_view)
-    private TextView textView;
-
-    private CompositeSubscription subscriptions = new CompositeSubscription();
+    TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +45,6 @@ public class MainActivity extends Activity {
                         .subscribeOn(Schedulers.computation())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(textView::setText));
-    }
-
-    protected void registerSubscription(@NonNull Subscription subscription) {
-        subscriptions.add(subscription);
     }
 
     @Override
@@ -75,13 +69,7 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        subscriptions.clear();
-    }
-
-    private static class Ticker implements Observable.OnSubscribe<Integer> {
+    private static class Ticker implements OnSubscribe<Integer> {
 
         @Override
         public void call(Subscriber<? super Integer> subscriber) {
