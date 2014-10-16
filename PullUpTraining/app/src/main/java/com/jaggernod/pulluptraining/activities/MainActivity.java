@@ -1,9 +1,9 @@
 package com.jaggernod.pulluptraining.activities;
 
 import com.jaggernod.pulluptraining.R;
+import com.jaggernod.pulluptraining.Timer;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -11,7 +11,6 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -39,13 +38,14 @@ public class MainActivity extends BaseActivity {
     @OnClick(R.id.start_button)
     public void test() {
         clearSubscriptions();
-        registerSubscription(
-                Observable.create(new Ticker())
-                        .map(Object::toString)
-                        .doOnNext(s -> Log.d(TAG, String.valueOf(this.hashCode())))
-                        .subscribeOn(Schedulers.computation())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(textView::setText));
+        Timer timer = new Timer();
+        timer.start();
+
+        registerSubscription(timer.asObservable()
+                .map(aLong -> String.valueOf(aLong/1000) + "s")
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(textView::setText));
     }
 
     @Override

@@ -20,6 +20,5 @@ public class ApplicationTest {
     public void testSomething() throws Exception {
         assertNotNull(true);
         StrictModeHelper.activityRecreation();
-
     }
 }
