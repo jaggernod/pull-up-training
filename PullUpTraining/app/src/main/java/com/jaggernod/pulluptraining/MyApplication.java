@@ -30,7 +30,7 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         singleton = this;
-        StrictModeHelper.startStrictMode();
+        StrictModeHelper.getInstance().startStrictMode();
     }
 
     @Override
