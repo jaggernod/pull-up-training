@@ -24,11 +24,12 @@ public class StrictModeHelper {
 
     private static final String TAG = StrictModeHelper.class.getSimpleName();
 
-    private boolean started = false;
-
-    private StrictModeHelper() { }
+    public static final boolean STRICT_POLICY_ENABLED = true && BuildConfig.DEBUG;
+    public static final boolean CREATE_HEAP_BUMP = true && STRICT_POLICY_ENABLED;
 
     private Set<Class<? extends Activity>> registeredActivities = new CopyOnWriteArraySet<>();
+
+    private boolean started = false;
 
     private static class SingletonHolder {
         public static final StrictModeHelper INSTANCE;
@@ -38,12 +39,11 @@ public class StrictModeHelper {
         }
     }
 
+    private StrictModeHelper() { }
+
     public static StrictModeHelper getInstance() {
         return SingletonHolder.INSTANCE;
     }
-
-    public static final boolean STRICT_POLICY_ENABLED = true && BuildConfig.DEBUG;
-    public static final boolean CREATE_HEAP_BUMP = true && STRICT_POLICY_ENABLED;
 
     private StrictMode.VmPolicy getStrictVmPolicy() {
         return new StrictMode.VmPolicy.Builder()
