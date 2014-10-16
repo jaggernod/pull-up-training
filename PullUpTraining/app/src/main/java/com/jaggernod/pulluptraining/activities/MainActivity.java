@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -33,11 +34,11 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
-
-        test();
     }
 
-    private void test() {
+    @OnClick(R.id.start_button)
+    public void test() {
+        clearSubscriptions();
         registerSubscription(
                 Observable.create(new Ticker())
                         .map(Object::toString)

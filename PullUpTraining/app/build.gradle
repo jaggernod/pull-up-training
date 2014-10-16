@@ -17,14 +17,16 @@ android {
     compileSdkVersion 20
     buildToolsVersion "20"
 
-
     defaultConfig {
         applicationId "com.jaggernod.pulluptraining"
         minSdkVersion 16
         targetSdkVersion 20
         versionCode 1
         versionName "0.1"
+        testApplicationId "com.jaggernod.pulluptraining.test"
+        testInstrumentationRunner "com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"
     }
+
     buildTypes {
         release {
             runProguard false
@@ -49,6 +51,16 @@ android {
 
     packagingOptions {
         exclude 'META-INF/services/javax.annotation.processing.Processor'
+        exclude 'LICENSE.txt'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE'
+    }
+
+    sourceSets {
+        androidTest {
+            setRoot('src/test')
+        }
     }
 
 }
@@ -68,12 +80,28 @@ dependencies {
     compile "com.netflix.rxjava:rxjava-core:0.20.5"
     compile "com.netflix.rxjava:rxjava-android:0.20.5"
     compile 'com.jakewharton:butterknife:5.1.2'
-    androidTestCompile 'com.google.guava:guava:18.0'
+    compile 'com.google.guava:guava:18.0'
+    compile 'com.jakewharton.espresso:espresso:1.1-r3'
+    compile 'com.jakewharton.espresso:espresso-support-v4:1.1-r3'
+    compile('com.jakewharton.espresso:espresso:1.1-r3') {
+        exclude group: 'com.squareup.dagger'
+        exclude group: 'com.apache.ant'
+        exclude group: 'com.apache.maven'
+        exclude group: 'junit:junit:4.11'
+    }
+
     androidTestCompile 'com.squareup.dagger:dagger:1.1.0'
     androidTestCompile 'org.hamcrest:hamcrest-integration:1.1'
     androidTestCompile 'org.hamcrest:hamcrest-core:1.1'
     androidTestCompile 'org.hamcrest:hamcrest-library:1.1'
-
+    androidTestCompile 'com.jakewharton.espresso:espresso:1.1-r3'
+    androidTestCompile 'com.jakewharton.espresso:espresso-support-v4:1.1-r3'
+    androidTestCompile('com.jakewharton.espresso:espresso:1.1-r3') {
+        exclude group: 'com.squareup.dagger'
+        exclude group: 'com.apache.ant'
+        exclude group: 'com.apache.maven'
+        exclude group: 'junit:junit:4.11'
+    }
     androidTestCompile('junit:junit:4.11') {
         exclude module: 'hamcrest-core'
     }
@@ -94,5 +122,13 @@ dependencies {
         exclude module: 'wagon-http-lightweight'
         exclude module: 'wagon-provider-api'
     }
-    androidTestCompile 'com.squareup:fest-android:1.0.+'
+    androidTestCompile 'com.squareup:fest-android:1.0.0'
+}
+
+apply plugin: 'idea'
+
+idea {
+    module {
+        testOutputDir = file('build/test-classes/debug')
+    }
 }

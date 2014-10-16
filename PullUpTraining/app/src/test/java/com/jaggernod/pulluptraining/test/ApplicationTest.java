@@ -1,4 +1,6 @@
-package com.jaggernod.pulluptraining;
+package com.jaggernod.pulluptraining.test;
+
+import com.jaggernod.pulluptraining.helpers.StrictModeHelper;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,5 +19,7 @@ public class ApplicationTest {
     @Test
     public void testSomething() throws Exception {
         assertNotNull(true);
+        StrictModeHelper.activityRecreation();
+
     }
 }

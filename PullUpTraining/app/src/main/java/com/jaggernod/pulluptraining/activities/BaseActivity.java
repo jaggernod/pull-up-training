@@ -19,10 +19,14 @@ public class BaseActivity extends Activity {
         subscriptions.add(subscription);
     }
 
+    protected void clearSubscriptions() {
+        subscriptions.clear();
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        subscriptions.clear();
+        clearSubscriptions();
     }
 
 }

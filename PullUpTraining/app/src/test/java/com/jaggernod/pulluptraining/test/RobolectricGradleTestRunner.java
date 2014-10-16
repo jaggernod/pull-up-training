@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2014 Samsung Electronics Co. Ltd All Rights reserved
  */
-package com.jaggernod.pulluptraining;
+package com.jaggernod.pulluptraining.test;
 
 import org.junit.runners.model.InitializationError;
 import org.robolectric.AndroidManifest;
