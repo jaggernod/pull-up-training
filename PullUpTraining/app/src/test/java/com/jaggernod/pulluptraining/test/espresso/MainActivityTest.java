@@ -6,6 +6,7 @@ import com.jaggernod.pulluptraining.activities.MainActivity;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 
+import android.content.pm.ActivityInfo;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
 
@@ -53,4 +54,11 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
                     }
                 })));
     }
+
+
+    public void testRotateActivity() {
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    }
+
 }

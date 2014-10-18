@@ -3,6 +3,7 @@ package com.jaggernod.pulluptraining.activities;
 import com.jaggernod.pulluptraining.R;
 
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,16 +34,19 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         ButterKnife.inject(this);
     }
 
     @OnClick(R.id.start_button)
     public void test() {
         clearSubscriptions();
+        Observable<String> observable = Observable.create(new Ticker())
+                .map(Object::toString)
+                .doOnNext(s -> Log.d(TAG, String.valueOf(this.hashCode())));
         registerSubscription(
-                Observable.create(new Ticker())
-                        .map(Object::toString)
-                        .doOnNext(s -> Log.d(TAG, String.valueOf(this.hashCode())))
+                observable
                         .subscribeOn(Schedulers.computation())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(textView::setText));

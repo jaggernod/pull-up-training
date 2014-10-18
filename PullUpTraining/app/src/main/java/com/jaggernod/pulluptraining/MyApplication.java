@@ -15,7 +15,7 @@ public class MyApplication extends Application {
 
     private static MyApplication singleton;
 
-    public MyApplication getInstance(){
+    public static MyApplication getInstance(){
         return singleton;
     }
 
