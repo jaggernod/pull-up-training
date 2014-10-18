@@ -2,9 +2,9 @@ package com.jaggernod.pulluptraining.activities;
 
 import com.jaggernod.pulluptraining.helpers.StrictModeHelper;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.ActionBarActivity;
 
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
@@ -12,7 +12,7 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Pawel Polanski on 15/10/14.
  */
-public class BaseActivity extends Activity {
+public class BaseActivity extends ActionBarActivity {
 
     private static final String TAG = BaseActivity.class.getSimpleName();
 
