@@ -1,6 +1,7 @@
 package com.jaggernod.pulluptraining.activities;
 
 import com.jaggernod.pulluptraining.R;
+import com.jaggernod.pulluptraining.TimerPullUp;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -27,8 +28,12 @@ public class MainActivity extends BaseActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
+    private static final String ELAPSED_TIME = "ELAPSED_TIME";
+
     @InjectView(R.id.hello_world_text_view)
     TextView textView;
+
+    private TimerPullUp timer = new TimerPullUp();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,20 +42,56 @@ public class MainActivity extends BaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ButterKnife.inject(this);
+
+        // Check whether we're recreating a previously destroyed instance
+        if (savedInstanceState != null) {
+            // Restore value of members from saved state
+            timer = savedInstanceState.getParcelable(ELAPSED_TIME);
+        } else {
+            // Probably initialize members with default values for a new instance
+        }
+
+        postCreate();
     }
 
-    @OnClick(R.id.start_button)
+    private void postCreate() {
+        if (timer.isRunning()) {
+            test1();
+        }
+    }
+
+    //    @OnClick(R.id.start_button)
     public void test() {
         clearSubscriptions();
         Observable<String> observable = Observable.create(new Ticker())
                 .map(Object::toString)
-                .doOnNext(s -> Log.d(TAG, String.valueOf(this.hashCode())));
+                .doOnNext(s -> Log.d(TAG, String.valueOf(((Object)this).hashCode())));
         registerSubscription(
                 observable
                         .subscribeOn(Schedulers.computation())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(textView::setText));
     }
+
+    @OnClick(R.id.start_button)
+    public void test1() {
+        clearSubscriptions();
+        Observable<String> observable = timer.start()
+                .map(aLong -> Math.round(aLong / 10.))
+                .map(Object::toString);
+        registerSubscription(
+                observable
+                        .subscribeOn(Schedulers.computation())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(textView::setText));
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putParcelable(ELAPSED_TIME, timer);
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
