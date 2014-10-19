@@ -1,7 +1,7 @@
 package com.jaggernod.pulluptraining.activities;
 
 import com.jaggernod.pulluptraining.R;
-import com.jaggernod.pulluptraining.TimerPullUp;
+import com.jaggernod.pulluptraining.utils.TimerPullUp;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
