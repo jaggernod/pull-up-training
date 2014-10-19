@@ -17,34 +17,46 @@ public class TimerPullUp implements Parcelable {
 
     private AtomicLong startTime = new AtomicLong(-1);
     private AtomicBoolean running = new AtomicBoolean(false);
+    private AtomicLong delta = new AtomicLong(0);
 
     public Observable<Long> start() {
         return Observable.timer(0, 100, TimeUnit.MILLISECONDS)
                 .takeWhile(aLong -> running.get())
-                .map(aLong -> aLong + increment())
+                .map(aLong -> aLong * 100)
+                .map(aLong -> aLong + delta.get() )
                 .doOnCompleted(this::pause)
                 .doOnError(throwable -> pause())
                 .doOnSubscribe(this::startInternal);
     }
 
     private void startInternal() {
-        if (startTime.get() < 0) {
-            startTime.set(SystemClock.elapsedRealtime());
+        if (startTime.get() != -1) {
+            delta.getAndAdd(calculateElapsedTime(startTime.get()));
         }
+        startTime.set(SystemClock.elapsedRealtime());
         running.set(true);
     }
 
-    private long increment() {
-        return (SystemClock.elapsedRealtime() - startTime.get()) / 100;
+    private static long calculateElapsedTime(final long startTime) {
+        return SystemClock.elapsedRealtime() - startTime;
     }
 
     public void pause() {
+        if (!running.get()) {
+            return;
+        }
         running.set(false);
+        delta.getAndAdd(calculateElapsedTime(startTime.get()));
+        startTime.set(-1);
     }
 
     public void stop() {
+        if (!running.get()) {
+            return;
+        }
         running.set(false);
         startTime.set(-1);
+        delta.set(0);
     }
 
     public boolean isRunning() {
@@ -53,7 +65,7 @@ public class TimerPullUp implements Parcelable {
 
     public long getTime() {
         long time = startTime.get();
-        return time < 0 ? -1 : (SystemClock.elapsedRealtime() - time) / 100;
+        return time < 0 ? delta.get() : calculateElapsedTime(time) + delta.get();
     }
 
     @Override
@@ -65,14 +77,16 @@ public class TimerPullUp implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.startTime.get());
         dest.writeByte(this.running.get() ? (byte) 1 : (byte) 0);
+        dest.writeLong(this.delta.get());
     }
 
     public TimerPullUp() {
     }
 
     private TimerPullUp(Parcel in) {
-        this.startTime.set(in.readLong() + 1);
+        this.startTime.set(in.readLong());
         this.running.set(in.readByte() != 0);
+        this.delta.set(in.readLong());
     }
 
     public static final Parcelable.Creator<TimerPullUp> CREATOR

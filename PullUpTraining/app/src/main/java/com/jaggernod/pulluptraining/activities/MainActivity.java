@@ -28,7 +28,7 @@ public class MainActivity extends BaseActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private static final String ELAPSED_TIME = "ELAPSED_TIME";
+    private static final String TIMER = "TIMER";
 
     @InjectView(R.id.hello_world_text_view)
     TextView textView;
@@ -46,7 +46,7 @@ public class MainActivity extends BaseActivity {
         // Check whether we're recreating a previously destroyed instance
         if (savedInstanceState != null) {
             // Restore value of members from saved state
-            timer = savedInstanceState.getParcelable(ELAPSED_TIME);
+            timer = savedInstanceState.getParcelable(TIMER);
         } else {
             // Probably initialize members with default values for a new instance
         }
@@ -55,6 +55,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void postCreate() {
+        textView.setText(timer.getTime()/1000 + "");
         if (timer.isRunning()) {
             test1();
         }
@@ -77,7 +78,7 @@ public class MainActivity extends BaseActivity {
     public void test1() {
         clearSubscriptions();
         Observable<String> observable = timer.start()
-                .map(aLong -> Math.round(aLong / 10.))
+                .map(aLong -> Math.round(aLong / 1000.))
                 .map(Object::toString);
         registerSubscription(
                 observable
@@ -86,9 +87,19 @@ public class MainActivity extends BaseActivity {
                         .subscribe(textView::setText));
     }
 
+    @OnClick(R.id.stop_button)
+    public void stop() {
+        timer.stop();
+    }
+
+    @OnClick(R.id.pause_button)
+    public void pause() {
+        timer.pause();
+    }
+
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putParcelable(ELAPSED_TIME, timer);
+        savedInstanceState.putParcelable(TIMER, timer);
         super.onSaveInstanceState(savedInstanceState);
     }
 
