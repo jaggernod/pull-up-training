@@ -56,9 +56,13 @@ public class MainActivity extends BaseActivity {
 
     private void postCreate() {
         textView.setText(timer.getTime()/1000 + "");
-        if (timer.isRunning()) {
-            test1();
-        }
+        registerSubscription("isRunning",
+                timer.isRunning()
+                        .first()
+                        .filter(aBoolean -> aBoolean)
+                        .subscribeOn(Schedulers.computation())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(aBoolean -> test1()));
     }
 
     //    @OnClick(R.id.start_button)
@@ -76,11 +80,10 @@ public class MainActivity extends BaseActivity {
 
     @OnClick(R.id.start_button)
     public void test1() {
-        clearSubscriptions();
         Observable<String> observable = timer.start()
                 .map(aLong -> Math.round(aLong / 1000.))
                 .map(Object::toString);
-        registerSubscription(
+        registerSubscription("timer",
                 observable
                         .subscribeOn(Schedulers.computation())
                         .observeOn(AndroidSchedulers.mainThread())

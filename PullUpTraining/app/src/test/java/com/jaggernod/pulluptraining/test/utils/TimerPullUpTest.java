@@ -45,26 +45,54 @@ public class TimerPullUpTest {
 
     @Test
     public void testTimerNotStartedWhenCreated() throws Exception {
-        assertFalse(timer.isRunning());
+        timer.isRunning()
+                .timeout(100, TimeUnit.MILLISECONDS)
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        assertFalse(aBoolean);
+                    }
+                });
     }
 
     @Test
     public void testTimerNotStartedWhenNotSubscribed() throws Exception {
         timer.start();
-        assertFalse(timer.isRunning());
+        timer.isRunning()
+                .timeout(100, TimeUnit.MILLISECONDS)
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        assertFalse(aBoolean);
+                    }
+                });
     }
 
     @Test
     public void testTimerStartedWhenSubscribed() throws Exception {
         timer.start().subscribe();
-        assertTrue(timer.isRunning());
+        timer.isRunning()
+                .timeout(100, TimeUnit.MILLISECONDS)
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        assertTrue(aBoolean);
+                    }
+                });
     }
 
     @Test
     public void testStoppedWhenStopped() throws Exception {
         timer.start().subscribe();
         timer.pause();
-        assertFalse(timer.isRunning());
+        timer.isRunning()
+                .timeout(100, TimeUnit.MILLISECONDS)
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        assertFalse(aBoolean);
+                    }
+                });
     }
 
     @Test
@@ -138,6 +166,6 @@ public class TimerPullUpTest {
         timer.start().subscribe();
         Thread.sleep(100);
         timer.stop();
-        assertEquals(timer.getTime(), -1);
+        assertEquals(timer.getTime(), 0);
     }
 }
