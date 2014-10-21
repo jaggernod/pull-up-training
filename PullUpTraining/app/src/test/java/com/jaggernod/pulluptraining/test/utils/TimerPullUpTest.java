@@ -3,6 +3,8 @@ package com.jaggernod.pulluptraining.test.utils;
 import com.jaggernod.pulluptraining.test.RobolectricGradleTestRunner;
 import com.jaggernod.pulluptraining.utils.TimerPullUp;
 
+import junit.framework.Assert;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +21,6 @@ import rx.functions.Action1;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
@@ -158,7 +159,8 @@ public class TimerPullUpTest {
         timer.start().subscribe();
         Thread.sleep(100);
         timer.pause();
-        assertNotEquals(timer.getTime(), -1);
+
+        Assert.assertEquals(timer.getTime(), 0);
     }
 
     @Test
