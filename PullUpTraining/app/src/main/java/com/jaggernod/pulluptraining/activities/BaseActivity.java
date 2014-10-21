@@ -25,7 +25,7 @@ public class BaseActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        StrictModeHelper.registerActivityClass(getClass());
+        StrictModeHelper.registerActivity(this);
     }
 
     protected void registerSubscription(@NonNull Subscription subscription) {

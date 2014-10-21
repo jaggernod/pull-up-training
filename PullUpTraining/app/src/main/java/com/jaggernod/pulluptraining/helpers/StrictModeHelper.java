@@ -83,25 +83,27 @@ public class StrictModeHelper {
         }
     }
 
-    public static boolean registerActivityClass(@NonNull Class<? extends Activity> activity) {
+    public static boolean registerActivity(@NonNull Activity activity) {
         if (!STRICT_POLICY_ENABLED) {
             return false;
         }
+
+        final Class<? extends Activity> activityClass = activity.getClass();
 
         if (!getInstance().isStarted()) {
             throw new RuntimeException("Strict polity not yet started");
         }
 
-        if (getInstance().isRegistered(activity)) {
-            Log.v(TAG, "Activity already registered: " + activity);
+        if (getInstance().isRegistered(activityClass)) {
+            Log.v(TAG, "Activity already registered: " + activityClass);
             return false;
         }
 
         try {
             Method m = StrictMode.class.getMethod("incrementExpectedActivityCount", Class.class);
-            m.invoke(null, activity);
-            getInstance().registeredActivities.add(activity);
-            Log.v(TAG, "New activity registered: " + activity);
+            m.invoke(null, activityClass);
+            getInstance().registeredActivities.add(activityClass);
+            Log.v(TAG, "New activity registered: " + activityClass);
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             Log.e(TAG, "Unable to increase the limit of activities", e);
             return false;
