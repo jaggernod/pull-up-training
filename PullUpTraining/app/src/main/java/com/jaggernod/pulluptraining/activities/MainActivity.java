@@ -5,7 +5,6 @@ import com.jaggernod.pulluptraining.utils.TimerPullUp;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -14,11 +13,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-
-import static rx.Observable.OnSubscribe;
 
 /**
  * Created by Pawel Polanski on 14/10/14.
@@ -47,15 +43,18 @@ public class MainActivity extends BaseActivity {
         if (savedInstanceState != null) {
             // Restore value of members from saved state
             timer = savedInstanceState.getParcelable(TIMER);
-        } else {
-            // Probably initialize members with default values for a new instance
         }
 
         postCreate();
     }
 
     private void postCreate() {
-        textView.setText(timer.getTime()/1000 + "");
+        registerSubscription("setText",
+                Observable.just(timer.getTime())
+                        .map(aLong -> aLong / 1000)
+                        .map(String::valueOf)
+                        .subscribe(textView::setText));
+
         registerSubscription("isRunning",
                 timer.isRunning()
                         .first()
@@ -65,26 +64,12 @@ public class MainActivity extends BaseActivity {
                         .subscribe(aBoolean -> test1()));
     }
 
-    //    @OnClick(R.id.start_button)
-    public void test() {
-        clearSubscriptions();
-        Observable<String> observable = Observable.create(new Ticker())
-                .map(Object::toString)
-                .doOnNext(s -> Log.d(TAG, String.valueOf(((Object)this).hashCode())));
-        registerSubscription(
-                observable
-                        .subscribeOn(Schedulers.computation())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(textView::setText));
-    }
-
     @OnClick(R.id.start_button)
     public void test1() {
-        Observable<String> observable = timer.start()
-                .map(aLong -> Math.round(aLong / 1000.))
-                .map(Object::toString);
         registerSubscription("timer",
-                observable
+                timer.start()
+                        .map(aLong -> Math.round(aLong / 1000.))
+                        .map(Object::toString)
                         .subscribeOn(Schedulers.computation())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(textView::setText));
@@ -105,7 +90,6 @@ public class MainActivity extends BaseActivity {
         savedInstanceState.putParcelable(TIMER, timer);
         super.onSaveInstanceState(savedInstanceState);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -129,23 +113,4 @@ public class MainActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private static class Ticker implements OnSubscribe<Integer> {
-
-        @Override
-        public void call(Subscriber<? super Integer> subscriber) {
-            if (!subscriber.isUnsubscribed()) {
-                int i = 0;
-                while (i < 100000) {
-                    subscriber.onNext(i++);
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        subscriber.onError(e);
-                        break;
-                    }
-                }
-                subscriber.onCompleted();
-            }
-        }
-    }
 }

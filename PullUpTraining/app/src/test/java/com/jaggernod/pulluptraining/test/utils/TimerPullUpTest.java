@@ -170,4 +170,5 @@ public class TimerPullUpTest {
         timer.stop();
         assertEquals(timer.getTime(), 0);
     }
+
 }

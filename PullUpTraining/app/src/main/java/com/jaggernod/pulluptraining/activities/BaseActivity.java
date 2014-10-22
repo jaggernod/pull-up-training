@@ -6,8 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBarActivity;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
@@ -20,7 +20,7 @@ public class BaseActivity extends ActionBarActivity {
     private static final String TAG = BaseActivity.class.getSimpleName();
 
     private CompositeSubscription subscriptions = new CompositeSubscription();
-    private Map<String, Subscription> subscriptionMap = new HashMap<>();
+    private Map<String, Subscription> subscriptionMap = new ConcurrentHashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -56,9 +56,6 @@ public class TimerPullUp implements Parcelable {
     }
 
     public void stop() {
-        if (!running.get()) {
-            return;
-        }
         running.set(false);
         runningSubject.onNext(Boolean.FALSE);
         startTime.set(-1);
@@ -66,7 +63,7 @@ public class TimerPullUp implements Parcelable {
     }
 
     public Observable<Boolean> isRunning() {
-        return runningSubject;
+        return runningSubject.distinctUntilChanged();
     }
 
     public long getTime() {
@@ -96,6 +93,7 @@ public class TimerPullUp implements Parcelable {
     }
 
     public static final Parcelable.Creator<TimerPullUp> CREATOR = new Parcelable.Creator<TimerPullUp>() {
+
         public TimerPullUp createFromParcel(Parcel source) {
             return new TimerPullUp(source);
         }
