@@ -2,6 +2,7 @@ package com.jaggernod.pulluptraining.activities;
 
 import com.jaggernod.pulluptraining.R;
 import com.jaggernod.pulluptraining.utils.TimerPullUp;
+import com.jaggernod.pulluptraining.utils.Utils;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -51,24 +52,26 @@ public class MainActivity extends BaseActivity {
     private void postCreate() {
         registerSubscription("setText",
                 Observable.just(timer.getTime())
-                        .map(aLong -> aLong / 1000)
-                        .map(String::valueOf)
+                        .map(Utils::millisecondsToSeconds)
+                        .map(Object::toString)
+                        .subscribeOn(Schedulers.computation())
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(textView::setText));
 
         registerSubscription("isRunning",
                 timer.isRunning()
                         .first()
-                        .filter(aBoolean -> aBoolean)
+                        .filter(isRunning -> isRunning)
                         .subscribeOn(Schedulers.computation())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(aBoolean -> test1()));
+                        .subscribe(isRunning -> start()));
     }
 
     @OnClick(R.id.start_button)
-    public void test1() {
+    public void start() {
         registerSubscription("timer",
                 timer.start()
-                        .map(aLong -> Math.round(aLong / 1000.))
+                        .map(Utils::millisecondsToSeconds)
                         .map(Object::toString)
                         .subscribeOn(Schedulers.computation())
                         .observeOn(AndroidSchedulers.mainThread())

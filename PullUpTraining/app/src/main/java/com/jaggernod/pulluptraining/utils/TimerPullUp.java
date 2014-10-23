@@ -22,11 +22,13 @@ public class TimerPullUp implements Parcelable {
     private final AtomicLong delta = new AtomicLong(0);
     private final Subject<Boolean, Boolean> runningSubject = BehaviorSubject.create(Boolean.FALSE);
 
+    private static final long TICK_PERIOD = 100;
+
     public Observable<Long> start() {
-        return Observable.timer(0, 100, TimeUnit.MILLISECONDS)
-                .takeWhile(aLong -> running.get())
-                .map(aLong -> aLong * 100)
-                .map(aLong -> aLong + delta.get())
+        return Observable.timer(0, TICK_PERIOD, TimeUnit.MILLISECONDS)
+                .takeWhile(index -> running.get())
+                .map(index -> index * TICK_PERIOD)
+                .map(tickTime -> tickTime + delta.get())
                 .doOnCompleted(this::pause)
                 .doOnError(throwable -> pause())
                 .doOnSubscribe(this::startInternal);
@@ -114,20 +116,13 @@ public class TimerPullUp implements Parcelable {
 
         TimerPullUp that = (TimerPullUp) o;
 
-        if (running != null ? !running.equals(that.running) : that.running != null) {
-            return false;
-        }
-        if (startTime != null ? !startTime.equals(that.startTime) : that.startTime != null) {
-            return false;
-        }
-
-        return true;
+        return running.equals(that.running) && startTime.equals(that.startTime);
     }
 
     @Override
     public int hashCode() {
-        int result = startTime != null ? startTime.hashCode() : 0;
-        result = 31 * result + (running != null ? running.hashCode() : 0);
+        int result = startTime.hashCode();
+        result = 31 * result + (running.hashCode());
         return result;
     }
 
