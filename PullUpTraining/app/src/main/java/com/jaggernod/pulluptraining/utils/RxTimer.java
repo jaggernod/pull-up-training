@@ -15,7 +15,7 @@ import rx.subjects.Subject;
 /**
  * Created by Pawel Polanski on 19/10/14.
  */
-public class TimerPullUp implements Parcelable {
+public class RxTimer implements Parcelable {
 
     private final AtomicLong startTime = new AtomicLong(-1);
     private final AtomicBoolean running = new AtomicBoolean(false);
@@ -85,23 +85,23 @@ public class TimerPullUp implements Parcelable {
         parcel.writeLong(this.delta.get());
     }
 
-    public TimerPullUp() { }
+    public RxTimer() { }
 
-    private TimerPullUp(Parcel in) {
+    private RxTimer(Parcel in) {
         this.startTime.set(in.readLong());
         this.running.set(in.readByte() != 0);
         this.delta.set(in.readLong());
         this.runningSubject.onNext(this.running.get());
     }
 
-    public static final Parcelable.Creator<TimerPullUp> CREATOR = new Parcelable.Creator<TimerPullUp>() {
+    public static final Parcelable.Creator<RxTimer> CREATOR = new Parcelable.Creator<RxTimer>() {
 
-        public TimerPullUp createFromParcel(Parcel source) {
-            return new TimerPullUp(source);
+        public RxTimer createFromParcel(Parcel source) {
+            return new RxTimer(source);
         }
 
-        public TimerPullUp[] newArray(int size) {
-            return new TimerPullUp[size];
+        public RxTimer[] newArray(int size) {
+            return new RxTimer[size];
         }
     };
 
@@ -110,11 +110,11 @@ public class TimerPullUp implements Parcelable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof TimerPullUp)) {
+        if (!(o instanceof RxTimer)) {
             return false;
         }
 
-        TimerPullUp that = (TimerPullUp) o;
+        RxTimer that = (RxTimer) o;
 
         return running.equals(that.running) && startTime.equals(that.startTime);
     }
