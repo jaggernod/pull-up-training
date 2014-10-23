@@ -1,5 +1,7 @@
 package com.jaggernod.pulluptraining.utils;
 
+import com.google.common.base.Preconditions;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.SystemClock;
@@ -22,9 +24,11 @@ public class RxTimer implements Parcelable {
     private final AtomicLong delta = new AtomicLong(0);
     private final Subject<Boolean, Boolean> runningSubject = BehaviorSubject.create(Boolean.FALSE);
 
-    private static final long TICK_PERIOD = 100;
+    private static final long TICK_PERIOD = 200;
 
     public Observable<Long> start() {
+        Preconditions.checkState(TICK_PERIOD > 0, "Tick period has to be positive");
+
         return Observable.timer(0, TICK_PERIOD, TimeUnit.MILLISECONDS)
                 .takeWhile(index -> running.get())
                 .map(index -> index * TICK_PERIOD)
