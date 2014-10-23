@@ -82,9 +82,8 @@ dependencies {
     compile "com.netflix.rxjava:rxjava-android:0.20.5"
     compile 'com.jakewharton:butterknife:5.1.2'
     compile 'com.google.guava:guava:18.0'
-    compile 'com.jakewharton.espresso:espresso:1.1-r3'
-    compile 'com.jakewharton.espresso:espresso-support-v4:1.1-r3'
-    compile('com.jakewharton.espresso:espresso:1.1-r3') {
+    androidTestCompile 'com.jakewharton.espresso:espresso-support-v4:1.1-r3'
+    androidTestCompile('com.jakewharton.espresso:espresso:1.1-r3') {
         exclude group: 'com.squareup.dagger'
         exclude group: 'com.apache.ant'
         exclude group: 'com.apache.maven'

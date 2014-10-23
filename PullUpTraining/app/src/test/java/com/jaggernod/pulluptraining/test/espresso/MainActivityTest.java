@@ -8,6 +8,7 @@ import org.hamcrest.Description;
 
 import android.content.pm.ActivityInfo;
 import android.test.ActivityInstrumentationTestCase2;
+import android.test.UiThreadTest;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
@@ -26,12 +27,14 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
         super(MainActivity.class);
     }
     @Override
+    @UiThreadTest
     public void setUp() throws Exception {
         super.setUp();
         // Espresso will not launch our activity for us, we must launch it via getActivity().
         getActivity();
     }
 
+    @UiThreadTest
     public void testCheckText() {
         onView(withId(R.id.hello_world_text_view))
                 .check(matches(withText(R.string.hello_world)));
