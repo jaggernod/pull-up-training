@@ -136,7 +136,7 @@ idea {
 
 task checkstyle(type: Checkstyle) {
     description 'Checks if the code is somewhat acceptable'
-    configFile file('./checkstyle.xml')
+    configFile file('./config/checkstyle/checkstyle.xml')
     source 'src/main/java'
     include '**/*.java'
     exclude '**/gen/**'
