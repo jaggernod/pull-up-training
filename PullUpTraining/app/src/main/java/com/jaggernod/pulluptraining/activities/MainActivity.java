@@ -1,7 +1,7 @@
 package com.jaggernod.pulluptraining.activities;
 
 import com.jaggernod.pulluptraining.R;
-import com.jaggernod.pulluptraining.utils.RxTimer;
+import com.jaggernod.pulluptraining.utils.RxTicker;
 import com.jaggernod.pulluptraining.utils.Utils;
 
 import android.os.Bundle;
@@ -30,7 +30,7 @@ public class MainActivity extends BaseActivity {
     @InjectView(R.id.hello_world_text_view)
     TextView textView;
 
-    private RxTimer timer = new RxTimer();
+    private RxTicker timer = new RxTicker();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

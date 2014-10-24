@@ -1,7 +1,7 @@
 package com.jaggernod.pulluptraining.test.utils;
 
 import com.jaggernod.pulluptraining.test.RobolectricGradleTestRunner;
-import com.jaggernod.pulluptraining.utils.RxTimer;
+import com.jaggernod.pulluptraining.utils.RxTicker;
 
 import junit.framework.Assert;
 
@@ -30,13 +30,13 @@ import static org.junit.Assert.fail;
 
 @Config(emulateSdk = 18)
 @RunWith(RobolectricGradleTestRunner.class)
-public class RxTimerTest {
+public class RxTickerTest {
 
-    RxTimer timer;
+    RxTicker timer;
 
     @Before
     public void setUp() throws Exception {
-        timer = new RxTimer();
+        timer = new RxTicker();
     }
 
     @Test

@@ -17,7 +17,7 @@ import rx.subjects.Subject;
 /**
  * Created by Pawel Polanski on 19/10/14.
  */
-public class RxTimer implements Parcelable {
+public class RxTicker implements Parcelable {
 
     private final AtomicLong startTime = new AtomicLong(-1);
     private final AtomicBoolean running = new AtomicBoolean(false);
@@ -89,23 +89,23 @@ public class RxTimer implements Parcelable {
         parcel.writeLong(this.delta.get());
     }
 
-    public RxTimer() { }
+    public RxTicker() { }
 
-    private RxTimer(Parcel in) {
+    private RxTicker(Parcel in) {
         this.startTime.set(in.readLong());
         this.running.set(in.readByte() != 0);
         this.delta.set(in.readLong());
         this.runningSubject.onNext(this.running.get());
     }
 
-    public static final Parcelable.Creator<RxTimer> CREATOR = new Parcelable.Creator<RxTimer>() {
+    public static final Parcelable.Creator<RxTicker> CREATOR = new Parcelable.Creator<RxTicker>() {
 
-        public RxTimer createFromParcel(Parcel source) {
-            return new RxTimer(source);
+        public RxTicker createFromParcel(Parcel source) {
+            return new RxTicker(source);
         }
 
-        public RxTimer[] newArray(int size) {
-            return new RxTimer[size];
+        public RxTicker[] newArray(int size) {
+            return new RxTicker[size];
         }
     };
 
@@ -114,11 +114,11 @@ public class RxTimer implements Parcelable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof RxTimer)) {
+        if (!(o instanceof RxTicker)) {
             return false;
         }
 
-        RxTimer that = (RxTimer) o;
+        RxTicker that = (RxTicker) o;
 
         return running.equals(that.running) && startTime.equals(that.startTime);
     }
