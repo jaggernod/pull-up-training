@@ -12,6 +12,7 @@ buildscript {
 apply plugin: 'com.android.application'
 apply plugin: 'retrolambda'
 apply plugin: 'robolectric'
+apply plugin: 'checkstyle'
 
 android {
     compileSdkVersion 21
@@ -131,4 +132,13 @@ idea {
     module {
         testOutputDir = file('build/test-classes/debug')
     }
+}
+
+task checkstyle(type: Checkstyle) {
+    description 'Checks if the code is somewhat acceptable'
+    configFile file('./checkstyle.xml')
+    source 'src/main/java'
+    include '**/*.java'
+    exclude '**/gen/**'
+    classpath = files() // empty because unnecessary for checkstyle
 }
