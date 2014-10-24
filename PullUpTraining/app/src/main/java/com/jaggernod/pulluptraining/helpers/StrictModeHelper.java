@@ -20,7 +20,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 /**
  * Created by Pawel Polanski on 14/10/14.
  */
-public class StrictModeHelper {
+public final class StrictModeHelper {
 
     private static final String TAG = StrictModeHelper.class.getSimpleName();
 
@@ -30,14 +30,6 @@ public class StrictModeHelper {
     private Set<Class<? extends Activity>> registeredActivities = new CopyOnWriteArraySet<>();
 
     private boolean started = false;
-
-    private static class SingletonHolder {
-        public static final StrictModeHelper INSTANCE;
-
-        static {
-            INSTANCE = new StrictModeHelper();
-        }
-    }
 
     private StrictModeHelper() { }
 
@@ -147,6 +139,14 @@ public class StrictModeHelper {
                     super.println("Dumping HPROF exception: " + e);
                 }
             }
+        }
+    }
+
+    private static class SingletonHolder {
+        public static final StrictModeHelper INSTANCE;
+
+        static {
+            INSTANCE = new StrictModeHelper();
         }
     }
 

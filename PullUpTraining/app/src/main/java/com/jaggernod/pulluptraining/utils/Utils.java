@@ -5,12 +5,14 @@ import android.support.annotation.NonNull;
 /**
  * Created by Pawel Polanski on 23/10/14.
  */
-public class Utils {
+public final class Utils {
 
-    private Utils() {}
+    private static final double MILLISECONDS_IN_SECOND = 1000.;
+
+    private Utils() { }
 
     public static long millisecondsToSeconds(@NonNull Long milliseconds) {
-        return Math.round(milliseconds / 1000.);
+        return Math.round(milliseconds / MILLISECONDS_IN_SECOND);
     }
 
 }

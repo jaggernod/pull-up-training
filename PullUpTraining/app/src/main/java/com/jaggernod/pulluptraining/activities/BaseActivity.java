@@ -52,7 +52,7 @@ public class BaseActivity extends ActionBarActivity {
 
     @Override
     protected void onDestroy() {
-        for(Subscription subscription: subscriptionMap.values()) {
+        for (Subscription subscription: subscriptionMap.values()) {
             subscription.unsubscribe();
         }
         subscriptionMap.clear();
