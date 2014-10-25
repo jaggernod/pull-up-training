@@ -1,6 +1,7 @@
 package com.jaggernod.pulluptraining.activities;
 
 import com.jaggernod.pulluptraining.helpers.StrictModeHelper;
+import com.jaggernod.pulluptraining.utils.RetainedStateHelper;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,8 +10,10 @@ import android.support.v7.app.ActionBarActivity;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import rx.Observable;
 import rx.Subscription;
-import rx.subscriptions.CompositeSubscription;
+
+import static com.jaggernod.pulluptraining.utils.RetainedStateHelper.RetainedState;
 
 /**
  * Created by Pawel Polanski on 15/10/14.
@@ -19,45 +22,40 @@ public class BaseActivity extends ActionBarActivity {
 
     private static final String TAG = BaseActivity.class.getSimpleName();
 
-    private CompositeSubscription subscriptions = new CompositeSubscription();
+    private RetainedStateHelper lifecycleHelper;
     private Map<String, Subscription> subscriptionMap = new ConcurrentHashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         StrictModeHelper.registerActivity(this);
+        lifecycleHelper = new RetainedStateHelper(this);
     }
 
-    protected void registerSubscription(@NonNull Subscription subscription) {
-        subscriptions.add(subscription);
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        subscriptionMap.clear();
+        lifecycleHelper.onDestroy();
     }
 
-    protected void registerSubscription(@NonNull String key, @NonNull Subscription subscription) {
+    protected void singleSubscription(@NonNull String key, @NonNull Subscription subscription) {
         if (subscriptionMap.containsKey(key)) {
             subscriptionMap.get(key).unsubscribe();
         }
         subscriptionMap.put(key, subscription);
     }
 
-    protected void clearSubscription(@NonNull String key) {
-        if (subscriptionMap.containsKey(key)) {
-            subscriptionMap.get(key).unsubscribe();
-            subscriptionMap.remove(key);
-        }
+    protected <T> Observable<T> bindObservable(@NonNull Observable<T> observable) {
+        return lifecycleHelper.bindObservable(observable);
     }
 
-    protected void clearSubscriptions() {
-        subscriptions.clear();
+    protected RetainedStateHelper getLifecycleHelper() {
+        return lifecycleHelper;
     }
 
-    @Override
-    protected void onDestroy() {
-        for (Subscription subscription: subscriptionMap.values()) {
-            subscription.unsubscribe();
-        }
-        subscriptionMap.clear();
-        clearSubscriptions();
-        super.onDestroy();
+    protected <T extends RetainedState> T getRetainedObject(@NonNull Class<T> clazz) {
+        return getLifecycleHelper().getRetainedState(clazz);
     }
 
 }

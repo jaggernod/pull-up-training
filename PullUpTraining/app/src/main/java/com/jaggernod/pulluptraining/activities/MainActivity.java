@@ -1,6 +1,7 @@
 package com.jaggernod.pulluptraining.activities;
 
 import com.jaggernod.pulluptraining.R;
+import com.jaggernod.pulluptraining.utils.RetainedStateHelper;
 import com.jaggernod.pulluptraining.utils.RxTicker;
 import com.jaggernod.pulluptraining.utils.Utils;
 
@@ -25,12 +26,10 @@ public class MainActivity extends BaseActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private static final String TIMER = "TIMER";
-
     @InjectView(R.id.hello_world_text_view)
     TextView textView;
 
-    private RxTicker timer = new RxTicker();
+    private TimerState state;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,39 +40,41 @@ public class MainActivity extends BaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // Check whether we're recreating a previously destroyed instance
-        if (savedInstanceState != null) {
-            // Restore value of members from saved state
-            timer = savedInstanceState.getParcelable(TIMER);
-        }
+        RetainedStateHelper helper = new RetainedStateHelper(this);
+        state = helper.getRetainedState(TimerState.class);
 
         postCreate();
     }
 
     private void postCreate() {
-        registerSubscription("setText",
-                Observable.just(timer.getTime())
-                        .map(Utils::millisecondsToSeconds)
-                        .map(Object::toString)
-                        .subscribeOn(Schedulers.computation())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(textView::setText));
+        bindObservable(Observable.just(state.timer.getTime()))
+                .map(Utils::millisecondsToSeconds)
+                .map(Object::toString)
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(textView::setText);
 
-        registerSubscription("isRunning",
-                timer.isRunning()
-                        .first()
-                        .filter(isRunning -> isRunning)
-                        .subscribeOn(Schedulers.computation())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(isRunning -> start()));
+        bindObservable(state.timer.isRunning())
+                .first()
+                .filter(isRunning -> isRunning)
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(isRunning -> start());
+    }
+
+    public static class TimerState extends RetainedStateHelper.RetainedState {
+        public RxTicker timer = new RxTicker();
+        public Observable<String> timeObservable;
     }
 
     @OnClick(R.id.start_button)
     public void start() {
-        registerSubscription("timer",
-                timer.start()
-                        .map(Utils::millisecondsToSeconds)
-                        .map(Object::toString)
+        state.timeObservable = state.timer.start()
+                .map(Utils::millisecondsToSeconds)
+                .map(Object::toString);
+
+        singleSubscription("start",
+                bindObservable(state.timeObservable)
                         .subscribeOn(Schedulers.computation())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(textView::setText));
@@ -81,18 +82,12 @@ public class MainActivity extends BaseActivity {
 
     @OnClick(R.id.stop_button)
     public void stop() {
-        timer.stop();
+        state.timer.stop();
     }
 
     @OnClick(R.id.pause_button)
     public void pause() {
-        timer.pause();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putParcelable(TIMER, timer);
-        super.onSaveInstanceState(savedInstanceState);
+        state.timer.pause();
     }
 
     @Override
