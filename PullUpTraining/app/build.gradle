@@ -79,8 +79,8 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:support-v4:21.0.0'
     compile 'com.android.support:appcompat-v7:21.0.+'
-    compile "com.netflix.rxjava:rxjava-core:0.20.5"
-    compile "com.netflix.rxjava:rxjava-android:0.20.5"
+    compile "com.netflix.rxjava:rxjava-core:0.20.6"
+    compile "com.netflix.rxjava:rxjava-android:0.20.6"
     compile 'com.jakewharton:butterknife:5.1.2'
     compile 'com.google.guava:guava:18.0'
     androidTestCompile 'com.jakewharton.espresso:espresso-support-v4:1.1-r3'
