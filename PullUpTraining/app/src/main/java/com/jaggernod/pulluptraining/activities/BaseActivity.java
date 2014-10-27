@@ -46,7 +46,7 @@ public class BaseActivity extends ActionBarActivity {
         subscriptionMap.put(key, subscription);
     }
 
-    protected <T> Observable<T> bindObservable(@NonNull Observable<T> observable) {
+    protected <T> Observable<T> bind(@NonNull Observable<T> observable) {
         return lifecycleHelper.bindObservable(observable);
     }
 

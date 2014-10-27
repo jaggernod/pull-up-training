@@ -38,23 +38,24 @@ public class MainActivity extends BaseActivity {
         ButterKnife.inject(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+        }
 
-        RetainedStateHelper helper = new RetainedStateHelper(this);
-        state = helper.getRetainedState(TimerState.class);
+        state = getRetainedObject(TimerState.class);
 
         postCreate();
     }
 
     private void postCreate() {
-        bindObservable(Observable.just(state.timer.getTime()))
+        bind(Observable.just(state.timer.getTime()))
                 .map(Utils::millisecondsToSeconds)
                 .map(Object::toString)
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(textView::setText);
 
-        bindObservable(state.timer.isRunning())
+        bind(state.timer.isRunning())
                 .first()
                 .filter(isRunning -> isRunning)
                 .subscribeOn(Schedulers.computation())
@@ -74,7 +75,7 @@ public class MainActivity extends BaseActivity {
                 .map(Object::toString);
 
         singleSubscription("start",
-                bindObservable(state.timeObservable)
+                bind(state.timeObservable)
                         .subscribeOn(Schedulers.computation())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(textView::setText));
