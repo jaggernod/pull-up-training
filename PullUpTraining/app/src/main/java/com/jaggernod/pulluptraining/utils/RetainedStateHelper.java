@@ -46,6 +46,7 @@ public final class RetainedStateHelper {
      * @see rx.android.observables.AndroidObservable#bindFragment(Object, rx.Observable)
      */
     public <T> Observable<T> bindObservable(Observable<T> in) {
+        // bindActivity changes the observeOn scheduler, so it needs to be the last scheduler request
         if (mActivity != null) {
             return AndroidObservable.bindActivity(mActivity, in).takeUntil(mDestroyed);
         } else if (mFragment != null) {

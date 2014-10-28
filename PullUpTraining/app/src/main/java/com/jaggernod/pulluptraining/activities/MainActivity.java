@@ -21,7 +21,6 @@ import rx.schedulers.Schedulers;
 /**
  * Created by Pawel Polanski on 14/10/14.
  */
-
 public class MainActivity extends BaseActivity<MainActivity.TimerState> {
 
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -48,23 +47,23 @@ public class MainActivity extends BaseActivity<MainActivity.TimerState> {
     }
 
     private void postCreate() {
-        bind(Observable.just(getState().timer.getTime()))
+        bind(Observable.just(getState().timer.getTime())
                 .map(Utils::millisecondsToSeconds)
-                .map(Object::toString)
+                .map(Object::toString))
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(textView::setText);
 
-        bind(getState().timer.isRunning())
+        bind(getState().timer.isRunning()
                 .first()
-                .filter(isRunning -> isRunning)
+                .filter(isRunning -> isRunning))
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(isRunning -> start());
     }
 
     public static class TimerState extends RetainedStateHelper.RetainedState {
-        public RxTicker timer = new RxTicker();
+        public final RxTicker timer = new RxTicker();
         public Observable<String> timeObservable;
     }
 
