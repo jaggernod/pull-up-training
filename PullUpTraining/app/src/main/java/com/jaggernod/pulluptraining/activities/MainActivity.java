@@ -22,14 +22,16 @@ import rx.schedulers.Schedulers;
  * Created by Pawel Polanski on 14/10/14.
  */
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity<MainActivity.TimerState> {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
     @InjectView(R.id.hello_world_text_view)
     TextView textView;
 
-    private TimerState state;
+    public MainActivity() {
+        super(TimerState.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,20 +44,18 @@ public class MainActivity extends BaseActivity {
             setSupportActionBar(toolbar);
         }
 
-        state = getRetainedObject(TimerState.class);
-
         postCreate();
     }
 
     private void postCreate() {
-        bind(Observable.just(state.timer.getTime()))
+        bind(Observable.just(getState().timer.getTime()))
                 .map(Utils::millisecondsToSeconds)
                 .map(Object::toString)
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(textView::setText);
 
-        bind(state.timer.isRunning())
+        bind(getState().timer.isRunning())
                 .first()
                 .filter(isRunning -> isRunning)
                 .subscribeOn(Schedulers.computation())
@@ -70,12 +70,12 @@ public class MainActivity extends BaseActivity {
 
     @OnClick(R.id.start_button)
     public void start() {
-        state.timeObservable = state.timer.start()
+        getState().timeObservable = getState().timer.start()
                 .map(Utils::millisecondsToSeconds)
                 .map(Object::toString);
 
         singleSubscription("start",
-                bind(state.timeObservable)
+                bind(getState().timeObservable)
                         .subscribeOn(Schedulers.computation())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(textView::setText));
@@ -83,12 +83,12 @@ public class MainActivity extends BaseActivity {
 
     @OnClick(R.id.stop_button)
     public void stop() {
-        state.timer.stop();
+        getState().timer.stop();
     }
 
     @OnClick(R.id.pause_button)
     public void pause() {
-        state.timer.pause();
+        getState().timer.pause();
     }
 
     @Override
