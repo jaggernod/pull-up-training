@@ -62,7 +62,7 @@ public abstract class BaseActivity<T extends RetainedState> extends ActionBarAct
         subscriptionMap.put(key, subscription);
     }
 
-    protected <T> Observable<T> bind(@NonNull Observable<T> observable) {
+    protected <U> Observable<U> bind(@NonNull Observable<U> observable) {
         return lifecycleHelper.bindObservable(observable);
     }
 
@@ -70,7 +70,7 @@ public abstract class BaseActivity<T extends RetainedState> extends ActionBarAct
         return lifecycleHelper;
     }
 
-    protected <T extends RetainedState> T getRetainedObject(@NonNull Class<T> clazz) {
+    protected <U extends RetainedState> U getRetainedObject(@NonNull Class<U> clazz) {
         return getLifecycleHelper().getRetainedState(clazz);
     }
 
