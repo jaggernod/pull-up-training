@@ -64,20 +64,33 @@ public class MainActivity extends BaseActivity<MainActivity.TimerState> {
 
     public static class TimerState extends RetainedStateHelper.RetainedState {
         public final RxTicker timer = new RxTicker();
-        public Observable<String> timeObservable;
+        public Observable<Long> timeObservable;
     }
 
     @OnClick(R.id.start_button)
     public void start() {
-        getState().timeObservable = getState().timer.start()
+        getState().timeObservable = bind(getState().timer.start()
                 .map(Utils::millisecondsToSeconds)
-                .map(Object::toString);
+                .distinctUntilChanged());
 
         singleSubscription("start",
-                bind(getState().timeObservable)
+                getState().timeObservable
+                        .map(Object::toString)
                         .subscribeOn(Schedulers.computation())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(textView::setText));
+
+        getState().timeObservable
+                .map(s -> Math.random())
+                .map(Double::floatValue)
+                .timeInterval()
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(floatTimeInterval ->
+                        textView.animate()
+                                .alpha(floatTimeInterval.getValue())
+                                .setDuration(floatTimeInterval.getIntervalInMilliseconds()));
+
     }
 
     @OnClick(R.id.stop_button)

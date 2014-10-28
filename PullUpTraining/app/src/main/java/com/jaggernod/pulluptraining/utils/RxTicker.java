@@ -130,7 +130,6 @@ public class RxTicker implements Parcelable {
         return result;
     }
 
-
     @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer("TimerPullUp{");
