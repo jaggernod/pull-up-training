@@ -111,7 +111,9 @@ public class Logger {
     }
 
     private String getTimestamp(final String message) {
-        return startTime != 0 ? SystemClock.elapsedRealtime() - startTime + "ms: " + message : message;
+        return startTime != 0
+                ? SystemClock.elapsedRealtime() - startTime + "ms: " + message
+                : message;
     }
 
     public static String getThreadSignature() {

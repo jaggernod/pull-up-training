@@ -45,7 +45,7 @@ public final class RetainedStateHelper {
     private final PublishSubject<Void> mDestroyed = PublishSubject.create();
 
     /**
-     * Constructor for activities
+     * Constructor for activities.
      * @param activity Support FragmentActivity
      */
     public RetainedStateHelper(FragmentActivity activity) {
@@ -54,7 +54,7 @@ public final class RetainedStateHelper {
     }
 
     /**
-     * Constructor for fragments
+     * Constructor for fragments.
      * @param fragment Support fragment
      */
     public RetainedStateHelper(Fragment fragment) {

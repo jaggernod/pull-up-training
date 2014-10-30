@@ -144,7 +144,7 @@ public final class StrictModeHelper {
 
     private static class PrintStreamThatDumpsHprofWhenStrictModeKillsUs extends PrintStream {
         public PrintStreamThatDumpsHprofWhenStrictModeKillsUs(OutputStream outs) {
-            super (outs);
+            super(outs);
         }
 
         @Override
