@@ -26,4 +26,5 @@
 <resources>
     <color name="main_color">#5480B0</color>
     <color name="main_dark_color">#ff3d5c7d</color>
+    <color name="leek_green_color">#ff086a1b</color>
 </resources>

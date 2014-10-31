@@ -31,9 +31,12 @@ import com.jaggernod.pulluptraining.utils.Utils;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+
+import java.util.concurrent.TimeUnit;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -114,17 +117,31 @@ public class MainActivity extends BaseActivity<MainActivity.TimerState> {
                         textView.animate()
                                 .alpha(floatTimeInterval.getValue())
                                 .setDuration(floatTimeInterval.getIntervalInMilliseconds()));
-
     }
 
+    @SuppressWarnings("unused")
     @OnClick(R.id.stop_button)
     public void stop() {
         getState().timer.stop();
     }
 
+    @SuppressWarnings("unused")
     @OnClick(R.id.pause_button)
     public void pause() {
         getState().timer.pause();
+    }
+
+    @SuppressWarnings("unused")
+    @OnClick(R.id.leek_button)
+    public void leak() {
+        Log.i(TAG, "Leek me!");
+        Observable<Long> leekStream = Observable.interval(1, TimeUnit.SECONDS)
+                .doOnSubscribe(() -> textView.setTextColor(getResources().getColor(R.color.leek_green_color)))
+                .doOnNext(aLong -> Log.i(TAG, "Leek growing on " + ((Object) MainActivity.this).hashCode()))
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread());
+
+        leekStream.subscribe(integer -> textView.setText(String.valueOf(integer)));
     }
 
     @Override
