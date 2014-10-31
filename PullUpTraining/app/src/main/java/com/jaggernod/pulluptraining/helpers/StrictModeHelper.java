@@ -157,8 +157,13 @@ public final class StrictModeHelper {
                 try {
                     File dir = Environment.getExternalStorageDirectory();
                     File file = new File(dir, "strict-mode-violation.hprof");
+                    if (!file.canWrite()) {
+                        super.println("Unable to write to: " + file + " Please ensure you write access");
+                        return;
+                    }
                     super.println("Dumping HPROF to: " + file);
                     Debug.dumpHprofData(file.getAbsolutePath());
+                    super.println("HPROF dump finished.");
                 } catch (Exception e) {
                     super.println("Dumping HPROF exception: " + e);
                 }
