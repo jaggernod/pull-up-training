@@ -33,6 +33,7 @@ buildscript {
     }
 }
 
+apply plugin: 'android-sdk-manager'
 apply plugin: 'com.android.application'
 apply plugin: 'retrolambda'
 apply plugin: 'robolectric'
@@ -90,8 +91,18 @@ android {
 
 }
 
+// Workaround for Google Play services + Robolectric
+tasks.whenTaskAdded { task ->
+    if ("testDebug".toString().equals(task.name.toString())) {
+        task.jvmArgs('-noverify')
+    }
+}
+
 retrolambda {
+    jdk System.getenv("JAVA8_HOME")
+    oldJdk System.getenv("JAVA7_HOME")
     javaVersion JavaVersion.VERSION_1_6
+    jvmArgs '-noverify'
 }
 
 robolectric {
