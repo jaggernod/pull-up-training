@@ -46,7 +46,6 @@ import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 /**
  * Created by Pawel Polanski on 14/10/14.
@@ -64,12 +63,12 @@ public class RxTickerTest {
     }
 
     @Test
-    public void testTimerNotNullWhenCreated() throws Exception {
+    public void test_timerNotNullWhenCreated() throws Exception {
         assertNotNull(timer);
     }
 
     @Test
-    public void testTimerNotStartedWhenCreated() throws Exception {
+    public void test_timerNotStartedWhenCreated() throws Exception {
         timer.isRunning()
                 .timeout(100, TimeUnit.MILLISECONDS)
                 .subscribe(new Action1<Boolean>() {
@@ -81,7 +80,7 @@ public class RxTickerTest {
     }
 
     @Test
-    public void testTimerNotStartedWhenNotSubscribed() throws Exception {
+    public void test_timerNotStartedWhenNotSubscribed() throws Exception {
         timer.start();
         timer.isRunning()
                 .timeout(100, TimeUnit.MILLISECONDS)
@@ -94,7 +93,7 @@ public class RxTickerTest {
     }
 
     @Test
-    public void testTimerStartedWhenSubscribed() throws Exception {
+    public void test_timerStartedWhenSubscribed() throws Exception {
         timer.start().subscribe();
         timer.isRunning()
                 .timeout(100, TimeUnit.MILLISECONDS)
@@ -107,7 +106,7 @@ public class RxTickerTest {
     }
 
     @Test
-    public void testStoppedWhenStopped() throws Exception {
+    public void test_stoppedWhenStopped() throws Exception {
         timer.start().subscribe();
         timer.pause();
         timer.isRunning()
@@ -120,8 +119,8 @@ public class RxTickerTest {
                 });
     }
 
-    @Test
-    public void testReceivingWhenSubscribed() {
+    @Test(timeout = 100)
+    public void test_receivingWhenSubscribed() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         timer.start().subscribe(new Action1<Long>() {
             @Override
@@ -129,16 +128,11 @@ public class RxTickerTest {
                 latch.countDown();
             }
         });
-
-        try {
-            assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
-        } catch (InterruptedException e) {
-            fail("Should have received an event");
-        }
+        latch.await();
     }
 
-    @Test
-    public void testCompletedWhenStopped() {
+    @Test(timeout = 100)
+    public void test_completedWhenStopped() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         timer.start().subscribe(new Observer<Long>() {
             @Override
@@ -157,29 +151,25 @@ public class RxTickerTest {
             }
         });
         timer.pause();
-        try {
-            assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
-        } catch (InterruptedException e) {
-            fail("Should have not failed");
-        }
+        latch.await();
     }
 
     @Test
-    public void testIsParcelable() throws Exception {
+    public void test_isParcelable() throws Exception {
         Bundle bundle = new Bundle();
         bundle.putParcelable("1", timer);
         assertNotNull(bundle.getParcelable("1"));
     }
 
     @Test
-    public void testRestoredParcelIsTheSame() throws Exception {
+    public void test_restoredParcelIsTheSame() throws Exception {
         Bundle bundle = new Bundle();
         bundle.putParcelable("1", timer);
         assertTrue(bundle.getParcelable("1").equals(timer));
     }
 
     @Test
-    public void testPausedResumes() throws Exception {
+    public void test_pausedResumes() throws Exception {
         timer.start().subscribe();
         Thread.sleep(100);
         timer.pause();
@@ -188,7 +178,7 @@ public class RxTickerTest {
     }
 
     @Test
-    public void testStoppedDoesNotResume() throws Exception {
+    public void test_stoppedDoesNotResume() throws Exception {
         timer.start().subscribe();
         Thread.sleep(100);
         timer.stop();
