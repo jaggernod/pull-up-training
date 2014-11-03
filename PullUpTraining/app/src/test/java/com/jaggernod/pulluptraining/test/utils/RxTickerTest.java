@@ -63,7 +63,7 @@ public class RxTickerTest {
     }
 
     @Test
-    public void test_timerNotNullWhenCreated() throws Exception {
+    public void testTimerNotNullWhenCreated() throws Exception {
         assertNotNull(timer);
     }
 
@@ -80,7 +80,7 @@ public class RxTickerTest {
     }
 
     @Test
-    public void test_timerNotStartedWhenNotSubscribed() throws Exception {
+    public void testTimerNotStartedWhenNotSubscribed() throws Exception {
         timer.start();
         timer.isRunning()
                 .timeout(100, TimeUnit.MILLISECONDS)
@@ -93,7 +93,7 @@ public class RxTickerTest {
     }
 
     @Test
-    public void test_timerStartedWhenSubscribed() throws Exception {
+    public void testTimerStartedWhenSubscribed() throws Exception {
         timer.start().subscribe();
         timer.isRunning()
                 .timeout(100, TimeUnit.MILLISECONDS)
@@ -106,7 +106,7 @@ public class RxTickerTest {
     }
 
     @Test
-    public void test_stoppedWhenStopped() throws Exception {
+    public void testStoppedWhenStopped() throws Exception {
         timer.start().subscribe();
         timer.pause();
         timer.isRunning()
@@ -120,7 +120,7 @@ public class RxTickerTest {
     }
 
     @Test(timeout = 100)
-    public void test_receivingWhenSubscribed() throws InterruptedException {
+    public void testReceivingWhenSubscribed() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         timer.start().subscribe(new Action1<Long>() {
             @Override
@@ -132,7 +132,7 @@ public class RxTickerTest {
     }
 
     @Test(timeout = 100)
-    public void test_completedWhenStopped() throws InterruptedException {
+    public void testCompletedWhenStopped() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         timer.start().subscribe(new Observer<Long>() {
             @Override
@@ -155,21 +155,21 @@ public class RxTickerTest {
     }
 
     @Test
-    public void test_isParcelable() throws Exception {
+    public void testIsParcelable() throws Exception {
         Bundle bundle = new Bundle();
         bundle.putParcelable("1", timer);
         assertNotNull(bundle.getParcelable("1"));
     }
 
     @Test
-    public void test_restoredParcelIsTheSame() throws Exception {
+    public void testRestoredParcelIsTheSame() throws Exception {
         Bundle bundle = new Bundle();
         bundle.putParcelable("1", timer);
         assertTrue(bundle.getParcelable("1").equals(timer));
     }
 
     @Test
-    public void test_pausedResumes() throws Exception {
+    public void testPausedResumes() throws Exception {
         timer.start().subscribe();
         Thread.sleep(100);
         timer.pause();
@@ -178,7 +178,7 @@ public class RxTickerTest {
     }
 
     @Test
-    public void test_stoppedDoesNotResume() throws Exception {
+    public void testStoppedDoesNotResume() throws Exception {
         timer.start().subscribe();
         Thread.sleep(100);
         timer.stop();
