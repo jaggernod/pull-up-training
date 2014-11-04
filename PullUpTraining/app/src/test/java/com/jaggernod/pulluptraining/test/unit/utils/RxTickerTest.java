@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package com.jaggernod.pulluptraining.test.utils;
+package com.jaggernod.pulluptraining.test.unit.utils;
 
-import com.jaggernod.pulluptraining.test.RobolectricGradleTestRunner;
+import com.jaggernod.pulluptraining.test.unit.RobolectricGradleTestRunner;
 import com.jaggernod.pulluptraining.utils.RxTicker;
 
 import junit.framework.Assert;

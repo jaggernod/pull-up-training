@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.jaggernod.pulluptraining.test;
+package com.jaggernod.pulluptraining.test.unit;
 
 import org.junit.runners.model.InitializationError;
 import org.robolectric.AndroidManifest;
